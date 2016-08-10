@@ -1,10 +1,15 @@
 #!/bin/bash
 
+# Send all errors to stdout
+exec 2>&1
+
+# Print MIME type
 cat <<MIME
 Content-Type: text/plain
 
 MIME
 
+# Check params
 [[ $QUERY_STRING == "" ]] && echo What shall I watch? && exit
 
 
