@@ -1,0 +1,11 @@
+#!/bin/bash
+
+cat <<MIME
+Content-Type: text/plain
+
+MIME
+
+[[ $QUERY_STRING == "" ]] && echo What shall I watch? && exit
+
+
+$QUERY_STRING

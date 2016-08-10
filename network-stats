@@ -1,0 +1,62 @@
+#!/bin/bash
+
+# Look up vendor from first half of MAC
+function vendor {
+
+	# If a MAC matches then look up the vendor
+	if [[ $line =~ ([[:xdigit:]]{2}:){5}[[:xdigit:]]{2} ]]; then
+		mac=$BASH_REMATCH
+		echo -n $mac \-\ 
+
+		# Strip colons
+		mac=${mac//:/}
+
+		# Look up MAC
+		v=${mac:0:6}
+		vend=$(grep -i $v oui.txt)
+		if [[ $vend != '' ]]; then
+			echo ${vend##)}
+		else
+			echo no match
+		fi
+	fi
+}
+
+function header {
+	echo -e \\n$*
+}
+
+header Current access point
+iwgetid
+
+external=8.8.8.8
+header Ping $external
+ping -w 1 -c 1 $external >& /dev/null && echo success || echo fail
+
+header MAC/vendor on current subnet
+ip n | while read line; do vendor $line; done
+
+header My IPs
+ip=$(hostname -I)
+
+# echo $'\nMAC/vendor for my NICs'
+# ip address | while read line; do
+# 	# [[ $line =~ ESSID ]] && echo $line
+# 	vendor $line
+# done
+
+header Routing table
+ip route
+
+header MAC/vendor for visible access points
+iwlist wlp1s0 scan | while read line; do
+	# [[ $line =~ ESSID ]] && echo $line
+	vendor $line
+done
+
+header Portscan self
+ip=127.0.0.1
+nc -vz $ip 1-10000 |& grep succeeded
+
+header TCP dump
+tcpdump | head
