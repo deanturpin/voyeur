@@ -5,9 +5,22 @@ exec 2>&1
 
 # Print MIME type
 cat <<MIME
-Content-Type: text/plain
+Content-Type: text/html
 
 MIME
+
+# HTML header
+stamp=$(date)
+cat <<HEADER
+<!-- $stamp -->
+
+<html>
+<head>
+<meta http-equiv="refresh" content="2">
+</head>
+<body>
+<pre>
+HEADER
 
 # Check params
 [[ $QUERY_STRING == "" ]] && echo What shall I watch? && exit
@@ -17,3 +30,10 @@ command=${QUERY_STRING//%20/ }
 
 # Run the command
 $command
+
+# HTML footer
+cat <<FOOTER
+</pre>
+</body>
+FOOTER
+
