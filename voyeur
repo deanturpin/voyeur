@@ -12,5 +12,8 @@ MIME
 # Check params
 [[ $QUERY_STRING == "" ]] && echo What shall I watch? && exit
 
+# Strip %
+command=${QUERY_STRING//%20/ }
 
-$QUERY_STRING
+# Run the command
+$command
