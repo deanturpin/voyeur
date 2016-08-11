@@ -12,13 +12,7 @@ function vendor {
 		mac=${mac//:/}
 
 		# Look up the vendor using the first half of the MAC
-		vend=$(grep -i ${mac:0:6} /usr/share/ieee-data/oui.txt)
-
-		if [[ $vend != '' ]]; then
-			echo \- ${vend##)*}
-		else
-			echo no vendor
-		fi
+		grep -i ${mac:0:6} /usr/share/ieee-data/oui.txt
 	fi
 }
 
@@ -38,20 +32,8 @@ external=8.8.8.8
 header Ping $external
 ping -w 1 -c 1 $external >& /dev/null && echo success || echo fail
 
-header Available NICs
-ls /sys/class/net/
-
-header My MAC/vendor
-mac=$(cat /sys/class/net/wlp1s0/address)
-echo $mac \- $(vendor $mac)
-
 header Routing table
 ip route
-
-header MAC/vendor for visible access points
-iwlist wlp1s0 scan | while read line; do
-	vendor $line
-done
 
 header MAC/vendor for IPs on the subnet
 ip n | while read line; do
@@ -61,5 +43,7 @@ done
 header Portscan self
 nc -vz 0.0.0.0 1-10000 |& grep succeeded
 
-# header TCP dump
-# tcpdump | head
+header MAC/vendor for visible access points
+iwlist wlp1s0 scan | while read line; do
+	vendor $line
+done

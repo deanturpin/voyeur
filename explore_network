@@ -15,5 +15,5 @@ subnet=${ip%.*}
 
 # Exploratory ping of a few IPs
 for ip in $subnet.{1..254}; do
-	ping -w 1 -c 1 $ip >& /dev/null && echo $ip success
+	ping -w 1 -c 1 $ip >& /dev/null && echo -e "$ip\tsuccess" || echo $ip
 done
