@@ -1,0 +1,19 @@
+#!/bin/bash
+
+function header {
+	echo -e \\n$*
+	echo '----------'
+}
+
+header My IPs
+ip=$(hostname -I)
+echo $ip
+
+header Ping some IPs
+# Extract subnet
+subnet=${ip%.*}
+
+# Exploratory ping of a few IPs
+for ip in $subnet.{1..31}; do
+	ping -w 1 -c 1 $ip >& /dev/null && echo $ip success
+done

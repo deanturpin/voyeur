@@ -11,13 +11,11 @@ function vendor {
 		# Strip colons
 		mac=${mac//:/}
 
-		# Extract vendor part of MAC
-		v=${mac:0:6}
+		# Look up the vendor using the first half of the MAC
+		vend=$(grep -i ${mac:0:6} /usr/share/ieee-data/oui.txt)
 
-		# Look up the vendor
-		vend=$(grep -i /usr/share/ieee-data/oui.txt)
 		if [[ $vend != '' ]]; then
-			echo ${vend##)*}
+			echo \- ${vend##)*}
 		else
 			echo no vendor
 		fi
@@ -45,35 +43,23 @@ ls /sys/class/net/
 
 header My MAC/vendor
 mac=$(cat /sys/class/net/wlp1s0/address)
-echo $mac
-vendor $mac
-
-header My IPs
-ip=$(hostname -I)
-echo $ip
-
-
-header Ping some IPs
-# Extract subnet
-subnet=${ip%.*}
-
-# Exploratory ping of a few IPs
-for ip in $subnet.{1..5}; do
-	ping -w 1 -c 1 $ip >& /dev/null && echo $ip success
-done
+echo $mac \- $(vendor $mac)
 
 header Routing table
 ip route
 
 header MAC/vendor for visible access points
 iwlist wlp1s0 scan | while read line; do
-	# [[ $line =~ ESSID ]] && echo $line
+	vendor $line
+done
+
+header MAC/vendor for IPs on the subnet
+ip n | while read line; do
 	vendor $line
 done
 
 header Portscan self
-ip=127.0.0.1
-nc -vz $ip 1-10000 |& grep succeeded
+nc -vz 0.0.0.0 1-10000 |& grep succeeded
 
 # header TCP dump
 # tcpdump | head
