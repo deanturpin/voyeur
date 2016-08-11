@@ -11,11 +11,13 @@ function vendor {
 		# Strip colons
 		mac=${mac//:/}
 
-		# Look up MAC
+		# Extract vendor part of MAC
 		v=${mac:0:6}
-		vend=$(grep -i $v oui.txt)
+
+		# Look up the vendor
+		vend=$(grep -i /usr/share/ieee-data/oui.txt)
 		if [[ $vend != '' ]]; then
-			echo ${vend##)}
+			echo ${vend##)*}
 		else
 			echo no vendor
 		fi
