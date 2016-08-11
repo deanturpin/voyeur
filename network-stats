@@ -17,33 +17,48 @@ function vendor {
 		if [[ $vend != '' ]]; then
 			echo ${vend##)}
 		else
-			echo no match
+			echo no vendor
 		fi
 	fi
 }
 
 function header {
 	echo -e \\n$*
+	echo '----------'
 }
 
 header Current access point
-iwgetid
+ap=$(iwgetid)
+
+# Trim and strip quotes
+ap=${ap#*:}
+echo ${ap//\"/}
 
 external=8.8.8.8
 header Ping $external
 ping -w 1 -c 1 $external >& /dev/null && echo success || echo fail
 
-header MAC/vendor on current subnet
-ip n | while read line; do vendor $line; done
+header Available NICs
+ls /sys/class/net/
+
+header My MAC/vendor
+mac=$(cat /sys/class/net/wlp1s0/address)
+echo $mac
+vendor $mac
 
 header My IPs
 ip=$(hostname -I)
+echo $ip
 
-# echo $'\nMAC/vendor for my NICs'
-# ip address | while read line; do
-# 	# [[ $line =~ ESSID ]] && echo $line
-# 	vendor $line
-# done
+
+header Ping some IPs
+# Extract subnet
+subnet=${ip%.*}
+
+# Exploratory ping of a few IPs
+for ip in $subnet.{1..5}; do
+	ping -w 1 -c 1 $ip >& /dev/null && echo $ip success
+done
 
 header Routing table
 ip route
@@ -58,5 +73,5 @@ header Portscan self
 ip=127.0.0.1
 nc -vz $ip 1-10000 |& grep succeeded
 
-header TCP dump
-tcpdump | head
+# header TCP dump
+# tcpdump | head

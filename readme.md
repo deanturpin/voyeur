@@ -20,3 +20,11 @@ http://127.0.0.1/cgi-bin/watch?cat%20/proc/interrupts
 
 ## Dependencies
 - oui.txt
+
+```
+sudo apt install ieee-data
+update-oui
+```
+
+oui.txt will be installed in `/usr/share/ieee-data/oui.txt`
+
