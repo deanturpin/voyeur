@@ -50,6 +50,6 @@ header Visible access points
 iwlist wlp1s0 scan | while read line; do
 
 	[[ $line =~ Cell ]] && echo -e \\n$line && vendor $line
-	[[ $line =~ Encryption\ key ]] && echo $line
+	[[ $line =~ 'Encryption key:off' ]] && echo OPEN
 	[[ $line =~ ESSID ]] && echo $line
 done
