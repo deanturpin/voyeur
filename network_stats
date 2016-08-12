@@ -4,7 +4,8 @@
 function vendor {
 
 	# If a MAC matches then look up the vendor
-	if [[ $line =~ ([[:xdigit:]]{2}:){5}[[:xdigit:]]{2} ]]; then
+	if [[ $* =~ ([[:xdigit:]]{2}:){5}[[:xdigit:]]{2} ]]; then
+
 		mac=$BASH_REMATCH
 		echo -n $mac \-\ 
 
@@ -20,6 +21,8 @@ function header {
 	echo -e \\n$*
 	echo '----------'
 }
+
+date
 
 header Current access point
 ap=$(iwgetid)
@@ -43,7 +46,10 @@ done
 header Portscan self
 nc -vz 0.0.0.0 1-10000 |& grep succeeded
 
-header MAC/vendor for visible access points
+header Visible access points
 iwlist wlp1s0 scan | while read line; do
-	vendor $line
+
+	[[ $line =~ Cell ]] && echo -e \\n$line && vendor $line
+	[[ $line =~ Encryption\ key ]] && echo $line
+	[[ $line =~ ESSID ]] && echo $line
 done
