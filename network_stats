@@ -40,7 +40,7 @@ key date
 value $(date)
 
 key currentAP
-value trim_ap $(iwgetid)
+value $(trim_ap $(iwgetid))
 
 key ping
 ping -w 1 -c 1 8.8.8.8 >& /dev/null && value success || value fail
@@ -57,17 +57,21 @@ ip n | while read line; do
 done
 
 key ports
+echo \[
 nc -vz 0.0.0.0 1-20000 |& grep succeeded | while read line; do
 	[[ $line =~ [[:digit:]]{1,5}\ port.*\] ]] && value $BASH_REMATCH
 done
+echo -e \\t\]
 
 key scan
+echo \[
 iwlist wlp1s0 scan | while read line; do
 
 	[[ $line =~ Cell ]] && value $line && value $(vendor $line)
 	[[ $line =~ 'Encryption key:off' ]] && value OPEN
 	[[ $line =~ ESSID ]] && value $(trim_ap $line)
 done
+echo -e \\t\]
 
 echo -e "\n\t\"end\":\tnull"
 echo \}
