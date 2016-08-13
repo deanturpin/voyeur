@@ -17,9 +17,14 @@ function vendor {
 	fi
 }
 
-# Pretty print a header for each section
-function header {
+# JSON key
+function key {
 	echo -en \\t\"$*\":\ 
+}
+
+# JSON value
+function value {
+	echo -e \\t\"$*\",
 }
 
 # Trim and strip quotes
@@ -31,36 +36,38 @@ function trim_ap {
 echo \{
 
 # Print something that changes each time
-header date
-date
+key date
+value $(date)
 
-header Current access point
-trim_ap $(iwgetid)
+key currentAP
+value trim_ap $(iwgetid)
 
-external=8.8.8.8
-header Ping $external
-ping -w 1 -c 1 $external >& /dev/null && echo success || echo fail
+key ping
+ping -w 1 -c 1 8.8.8.8 >& /dev/null && value success || value fail
 
-header Gateway
+key Gateway
 ip route | while read line; do
 	
-	[[ $line =~ via\ ([[:digit:]]{1,3}\.[[:digit:]]{1,3}\.[[:digit:]]{1,3}\.[[:digit:]]{1,3}) ]] && echo ${BASH_REMATCH[1]}
+	[[ $line =~ via\ ([[:digit:]]{1,3}\.[[:digit:]]{1,3}\.[[:digit:]]{1,3}\.[[:digit:]]{1,3}) ]] && value ${BASH_REMATCH[1]}
 done
 
-header Neighbours
+key neigh
 ip n | while read line; do
-	[[ $line =~ FAILED ]] || echo $line $(vendor $line)
+	[[ $line =~ FAILED ]] || value $line $(vendor $line)
 done
 
-header Portscan self
-nc -vz 0.0.0.0 1-10000 |& grep succeeded
+key ports
+nc -vz 0.0.0.0 1-20000 |& grep succeeded | while read line; do
+	[[ $line =~ [[:digit:]]{1,5}\ port.*\] ]] && value $BASH_REMATCH
+done
 
-header Visible access points
+key scan
 iwlist wlp1s0 scan | while read line; do
 
-	[[ $line =~ Cell ]] && echo -e \\n$line && vendor $line
-	[[ $line =~ 'Encryption key:off' ]] && echo OPEN
-	[[ $line =~ ESSID ]] && trim_ap $line
+	[[ $line =~ Cell ]] && value $line && value $(vendor $line)
+	[[ $line =~ 'Encryption key:off' ]] && value OPEN
+	[[ $line =~ ESSID ]] && value $(trim_ap $line)
 done
 
+echo -e "\n\t\"end\":\tnull"
 echo \}
