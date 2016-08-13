@@ -1,8 +1,0 @@
-#!/bin/bash
-
-iwlist wlp1s0 scan | while read line; do
-
-	[[ $line =~ Cell ]] && echo -e \\n$line
-	[[ $line =~ Encryption\ key ]] && echo $line
-	[[ $line =~ ESSID ]] && echo $line
-done

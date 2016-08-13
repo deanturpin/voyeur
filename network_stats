@@ -39,12 +39,19 @@ external=8.8.8.8
 header Ping $external
 ping -w 1 -c 1 $external >& /dev/null && echo success || echo fail
 
-header Routing table
-ip route
+header Gateway
+ip route | while read line; do
+	
+	if [[ $line =~ src\ ([[:digit:]]{1,3}\.[[:digit:]]{1,3}\.[[:digit:]]{1,3}\.[[:digit:]]{1,3}) ]]; then
 
-header MAC/vendor for IPs on the subnet
+		gateway=${BASH_REMATCH[1]}
+		echo $gateway
+	fi
+done
+
+header Neighbours
 ip n | while read line; do
-	vendor $line
+	[[ $line =~ FAILED ]] || echo $line $(vendor $line)
 done
 
 header Portscan self
