@@ -67,7 +67,7 @@ key scan
 echo \[
 iwlist wlp1s0 scan | while read line; do
 
-	[[ $line =~ Cell ]] && value $line && value $(vendor $line)
+	[[ $line =~ Cell ]] && value ${line/Address:/} && value $(vendor $line)
 	[[ $line =~ 'Encryption key:off' ]] && value OPEN
 	[[ $line =~ ESSID ]] && value $(trim_ap $line)
 done
