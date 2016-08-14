@@ -42,6 +42,10 @@ value $(date)
 key currentAP
 value $(trim_ap $(iwgetid))
 
+key ipaddress
+ip=$(hostname -I)
+[[ $ip =~ [^\ ]+ ]] && value $BASH_REMATCH
+
 key ping
 ping -w 1 -c 1 8.8.8.8 >& /dev/null && value success || value fail
 
