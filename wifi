@@ -56,6 +56,7 @@ ip route | while read line; do
 done
 
 key neigh
+echo
 ip n | while read line; do
 	[[ $line =~ FAILED ]] || value $line $(vendor $line)
 done
@@ -71,9 +72,9 @@ key scan
 echo \[
 iwlist wlp1s0 scan | while read line; do
 
-	[[ $line =~ Cell ]] && value ${line/Address:/} && value $(vendor $line)
-	[[ $line =~ 'Encryption key:off' ]] && value OPEN
+	[[ $line =~ Cell ]] && echo && value $(vendor $line)
 	[[ $line =~ ESSID ]] && value $(trim_ap $line)
+	[[ $line =~ 'Encryption key:off' ]] && value OPEN
 done
 echo -e "\t]"
 
