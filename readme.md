@@ -15,9 +15,9 @@ sudo service apache2 restart
 See the [https://help.ubuntu.com/lts/serverguide/httpd.html](Ubuntu documentation).
 
 ## Installing watch
-Copy everything into into `/usr/lib/cgi-bin`
+Copy everything into `/usr/lib/cgi-bin`
 
-## Running
+## Running watch
 Simply add a command to the query string.
 ```
 http://127.0.0.1/cgi-bin/watch?cat%20/proc/interrupts
