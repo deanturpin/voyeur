@@ -1,7 +1,7 @@
 You can run anything under `watch` so __this doesn't belong on a public web server__.
 
 ## Installing Apache on Ubuntu 16
-```
+```bash
 # Install
 sudo apt install apache2
 ```
