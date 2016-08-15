@@ -1,3 +1,5 @@
+You can run anything under `watch` so __this doesn't belong on a public web server__.
+
 ## Installing Apache on Ubuntu 16
 Install
 ```
@@ -16,13 +18,15 @@ See the [https://help.ubuntu.com/lts/serverguide/httpd.html](Ubuntu documentatio
 Copy everything into into `/usr/lib/cgi-bin`
 
 ## Running
-You can run anything under watch (of course this is a HUGE security hole).
-
-`http://127.0.0.1/cgi-bin/watch?cat%20/proc/interrupts`
+Simply add a command to the query string.
+```
+http://127.0.0.1/cgi-bin/watch?cat%20/proc/interrupts
+```
 
 ## OUI
-OUI must be installed for the vendor lookup. Curiously it is by default on
-CentOS and Scientific Linux but not Ubuntu. It is trivial to install, though.
+OUI must be installed for the vendor lookup. Curiously it is installed by
+default on CentOS and Scientific Linux but not Ubuntu. It is trivial to
+install, though.
 
 ```
 sudo apt install ieee-data
