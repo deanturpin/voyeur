@@ -49,7 +49,7 @@ ip=$(hostname -I)
 key ping
 ping -w 1 -c 1 8.8.8.8 >& /dev/null && value success || value fail
 
-key Gateway
+key gateway
 ip route | while read line; do
 	
 	[[ $line =~ via\ ([[:digit:]]{1,3}\.[[:digit:]]{1,3}\.[[:digit:]]{1,3}\.[[:digit:]]{1,3}) ]] && value ${BASH_REMATCH[1]}
@@ -65,7 +65,7 @@ echo \[
 nc -vz 0.0.0.0 1-20000 |& grep succeeded | while read line; do
 	[[ $line =~ [[:digit:]]{1,5}\ port.*\] ]] && value $BASH_REMATCH
 done
-echo -e \\t\]
+echo -e "\t]"
 
 key scan
 echo \[
@@ -75,7 +75,7 @@ iwlist wlp1s0 scan | while read line; do
 	[[ $line =~ 'Encryption key:off' ]] && value OPEN
 	[[ $line =~ ESSID ]] && value $(trim_ap $line)
 done
-echo -e \\t\]
+echo -e "\t]"
 
 echo -e "\n\t\"end\":\tnull"
 echo \}
