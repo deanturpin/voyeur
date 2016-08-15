@@ -1,13 +1,13 @@
 You can run anything under `watch` so __this doesn't belong on a public web server__.
 
 ## Installing Apache on Ubuntu 16
-Install
 ```
+# Install
 sudo apt install apache2
 ```
 
-Configure - use defaults
 ```bash
+# Enable CGI and start the server
 sudo a2enmod cgi
 sudo service apache2 restart
 ```
