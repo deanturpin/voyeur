@@ -1,6 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include <vector>
+#include <regex>
 
 int main() {
 	using namespace std;
@@ -16,6 +17,8 @@ int main() {
 		string ap;
 		getline(ifstream(filename), ap);
 		cout << ap << endl;
+
+		cout << regex_match(ap, regex(".*ESSID.*")) << endl;
 	}
 
 	// Define some interesting files
