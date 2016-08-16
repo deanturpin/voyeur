@@ -1,0 +1,32 @@
+#!/bin/bash
+
+# Send all errors to stdout
+exec 2>&1
+
+# Print MIME type
+cat <<MIME
+Content-Type: text/html
+
+MIME
+
+# HTML header
+stamp=$(date)
+cat <<HEADER
+<!-- $stamp -->
+
+<html>
+<head>
+<meta http-equiv="refresh" content="5">
+</head>
+<body>
+<pre>
+HEADER
+
+clang++ wifi.cpp -o wifi.o -std=c++1z && ./wifi.o
+
+# HTML footer
+cat <<FOOTER
+</pre>
+</body>
+FOOTER
+
