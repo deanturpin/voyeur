@@ -19,6 +19,7 @@ int main() {
 		cout << ap << endl;
 
 		cout << regex_match(ap, regex(".*ESSID.*")) << endl;
+		cout << (ap.find("ESSID") != string::npos) << endl;
 	}
 
 	// Define some interesting files
