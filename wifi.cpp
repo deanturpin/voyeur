@@ -3,6 +3,19 @@
 #include <vector>
 #include <regex>
 
+namespace node {
+
+	using namespace std;
+
+	class node {
+
+		public:
+
+		string MAC;
+		string ESSID;
+	};
+}
+
 int main() {
 	using namespace std;
 
@@ -10,36 +23,33 @@ int main() {
 	cout << "Content-Type: text/plain\n\n" << endl;
 
 	// Currently connected AP
-	{
-		const string filename = "/tmp/blah.txt";
-		system(string("iwgetid > " + filename).c_str());
+	const string filename = "/tmp/blah.txt";
+	system(string("iwgetid > " + filename).c_str());
 
-		string ap;
-		getline(ifstream(filename), ap);
-		cout << ap << endl;
+	string ap;
+	getline(ifstream(filename), ap);
+	cout << "Current AP " << ap << endl;
 
-		cout << regex_match(ap, regex(".*ESSID.*")) << endl;
-		cout << (ap.find("ESSID") != string::npos) << endl;
-	}
+	// Interrogate self
+	node::node self;
+	// string mac = ifstream("/sys/class/net/wlp1s0/address").rdbuf();
+	self.MAC = "blah";
+	self.ESSID = ap;
 
-	// Define some interesting files
-	vector<string> files = {
-		"/sys/class/net/wlp1s0/address"
-	};
+	// Create container for all nodes
+	vector<node::node> nodes;
+	nodes.push_back(self);
 
-	// And read them
-	for (const auto &f : files) {
-
-		cout << ifstream(f).rdbuf();
-	}
+	cout << "Number of nodes " << nodes.size() << endl;
 
 	// Define some interesting commands
 	vector<string> command = {
+
 		// "ip route",
 		// "ping -w 1 8.8.8.8",
-		"ip neighbour",
+		// "ip neighbour",
 		// "nc -vz 0.0.0.0 1-20000 2>&1 | grep succeeded",
-		// "iwlist wlp1s0 scan",
+		"iwlist wlp1s0 scan | grep ESSID",
 	};
 
 	// And run them
@@ -50,7 +60,7 @@ int main() {
 		const string _c = c + " > " + file;
 
 		// Call it
-		system (_c.c_str());
+		system(_c.c_str());
 
 		// Print the output
 		cout << ifstream(file).rdbuf() << endl;
