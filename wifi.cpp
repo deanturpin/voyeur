@@ -60,13 +60,17 @@ int main() {
 	// Extraction of several sub-matches
 	cmatch m;
 
-	auto _s = s.str();
-	// string _s = "I am an ESSID...";
-	regex_search(_s.c_str(), m, regex("ESSID:\"(.*)\""));
+	// vector<string> key = {
+	// };
 
-	cout << "Number of matches " << m.size() << endl;
-	for (const auto &_m : m)
-		cout << _m << endl;
+	if (regex_search(s.str().c_str(), m, regex("ESSID:.*")))
+		cout << *m.cbegin() << endl;
+
+	if (regex_search(s.str().c_str(), m, regex("Address:.*")))
+		cout << *m.cbegin() << endl;
+
+	if (regex_search(s.str().c_str(), m, regex("Encryption key:.*")))
+		cout << *m.cbegin() << endl;
 
 	// cout << s.str() << endl;
 
