@@ -7,6 +7,5 @@ while :; do
 
 	# Build and run
 	clear
-	git status
-	make -j run
+	make -j run && git diff
 done
