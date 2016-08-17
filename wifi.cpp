@@ -61,9 +61,12 @@ int main() {
 	cmatch m;
 
 	auto _s = s.str();
-	regex_match("I am an ESSID...", m, regex(".*ESSID.*"));
+	// string _s = "I am an ESSID...";
+	regex_search(_s.c_str(), m, regex("ESSID:\"(.*)\""));
 
 	cout << "Number of matches " << m.size() << endl;
+	for (const auto &_m : m)
+		cout << _m << endl;
 
 	// cout << s.str() << endl;
 
