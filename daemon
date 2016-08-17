@@ -3,7 +3,7 @@
 while :; do
 
 	# Wait for file to be written to
-	inotifywait -e modify wifi.cpp
+	inotifywait -e modify wifi.cpp -q
 
 	# Build and run
 	clear
