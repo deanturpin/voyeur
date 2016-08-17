@@ -60,19 +60,21 @@ int main() {
 	// Extraction of several sub-matches
 	cmatch m;
 
-	// vector<string> key = {
-	// };
+	vector<string> keys = {
+		"ESSID",
+		"Address",
+		"Encryption key"
+	};
 
-	if (regex_search(s.str().c_str(), m, regex("ESSID:.*")))
-		cout << *m.cbegin() << endl;
+	// Search for keys
+	for (const auto &k : keys)
+		if (regex_search(s.str().c_str(), m, regex(k + ":.*")))
+			cout << *m.cbegin() << endl;
 
-	if (regex_search(s.str().c_str(), m, regex("Address:.*")))
-		cout << *m.cbegin() << endl;
+	stringstream oui;
+	oui << ifstream("/usr/share/ieee-data/oui.txt").rdbuf();
 
-	if (regex_search(s.str().c_str(), m, regex("Encryption key:.*")))
-		cout << *m.cbegin() << endl;
-
-	// cout << s.str() << endl;
+	cout << "Scan complete" << endl;
 
 	return 0;
 }
