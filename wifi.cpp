@@ -42,29 +42,30 @@ int main() {
 
 	cout << "Number of nodes " << nodes.size() << endl;
 
-	// Define some interesting commands
-	vector<string> command = {
+	// "ip route",
+	// "ping -w 1 8.8.8.8",
+	// "ip neighbour",
+	// "nc -vz 0.0.0.0 1-20000 2>&1 | grep succeeded",
+	// "iwlist wlp1s0 scan | grep ESSID",
 
-		// "ip route",
-		// "ping -w 1 8.8.8.8",
-		// "ip neighbour",
-		// "nc -vz 0.0.0.0 1-20000 2>&1 | grep succeeded",
-		"iwlist wlp1s0 scan | grep ESSID",
-	};
+	const string file = "/tmp/blah.txt";
+	const string command = "iwlist wlp1s0 scan > " + file;
 
-	// And run them
-	for (const auto &c : command) {
+	// Get all visiable access points
+	cout << "AP scan..." << endl;
+	system(command.c_str());
+	stringstream s;
+	s << ifstream(file).rdbuf();
 
-		// Construct full command
-		const string file =  "/tmp/blah.txt";
-		const string _c = c + " > " + file;
+	// Extraction of several sub-matches
+	cmatch m;
 
-		// Call it
-		system(_c.c_str());
+	auto _s = s.str();
+	regex_match("I am an ESSID...", m, regex(".*ESSID.*"));
 
-		// Print the output
-		cout << ifstream(file).rdbuf() << endl;
-	}
+	cout << "Number of matches " << m.size() << endl;
+
+	// cout << s.str() << endl;
 
 	return 0;
 }
