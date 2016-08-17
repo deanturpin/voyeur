@@ -1,4 +1,12 @@
 #!/bin/bash
 
-while :; do inotifywait -e modify wifi.cpp; clear; make -j run; done
+while :; do
 
+	# Wait for file to be written to
+	inotifywait -e modify wifi.cpp
+
+	# Build and run
+	clear
+	git status
+	make -j run
+done
