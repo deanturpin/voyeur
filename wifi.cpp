@@ -48,6 +48,11 @@ int main() {
 	// "nc -vz 0.0.0.0 1-20000 2>&1 | grep succeeded",
 	// "iwlist wlp1s0 scan | grep ESSID",
 
+	cout << "Read OUI... " << endl;
+	stringstream oui;
+	oui << ifstream("/usr/share/ieee-data/oui.txt").rdbuf();
+	cout << "done" << endl;
+
 	const string file = "/tmp/blah.txt";
 	const string command = "iwlist wlp1s0 scan > " + file;
 
@@ -60,20 +65,30 @@ int main() {
 	// Extraction of several sub-matches
 	cmatch m;
 
+	// Search for vendor
+	if (regex_search(s.str().c_str(), m, regex("Address: (.*)"))) {
+		const cmatch mcopy (m);
+		const string mac = mcopy[1];
+
+		cout << "mac: " << mac << endl;
+		string vendor = "no vendor";
+		// if (regex_search(oui.str().c_str(), m, regex("XEROX")))
+			// vendor = *m.cbegin();
+
+		cout << "vendor: " << vendor << endl;
+	}
+
 	vector<string> keys = {
 		"ESSID",
-		"Address",
 		"Encryption key"
 	};
 
-	// Search for keys
+	// Search for other keys
 	for (const auto &k : keys)
 		if (regex_search(s.str().c_str(), m, regex(k + ":.*")))
 			cout << *m.cbegin() << endl;
 
-	stringstream oui;
-	oui << ifstream("/usr/share/ieee-data/oui.txt").rdbuf();
-
+	system("iwlist wlp1s0 scan | grep ESSID");
 	cout << "Scan complete" << endl;
 
 	return 0;
