@@ -38,12 +38,6 @@ namespace node {
 	}
 }
 
-// "ip route",
-// "ping -w 1 8.8.8.8",
-// "ip neighbour",
-// "nc -vz 0.0.0.0 1-20000 2>&1 | grep succeeded",
-// "iwlist wlp1s0 scan | grep ESSID",
-
 int main() {
 	using namespace std;
 
@@ -105,9 +99,13 @@ int main() {
 	*/
 
 	// Rescan (just the AP names)
-	cout << "----------" << endl;
-	const auto rescan = node::command("iwlist wlp1s0 scan | grep ESSID");
-	cout << rescan << endl;
+	cout << "------------------------------" << endl;
+	cout << node::command("iwlist wlp1s0 scan | grep ESSID") << endl;
+	cout << "ping: " << node::command("ping -w 1 8.8.8.8 1> /dev/null && echo true || echo false") << endl;
+	// cout << node::command("ip route") << endl;
+	cout << node::command("ip neighbour") << endl;
+	cout << node::command("nc -vz 0.0.0.0 1-20000 2>&1 | grep succeeded") << endl;
+	cout << node::command("hcitool scan") << endl;
 
 	return 0;
 }
