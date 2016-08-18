@@ -7,6 +7,7 @@ namespace node {
 
 	using namespace std;
 
+	// A thing on the network
 	class node {
 
 		const string mac;
@@ -24,6 +25,7 @@ namespace node {
 
 	};
 
+	// Run something on the command line and return the output
 	string command(const string &c) {
 
 		const string file = "/tmp/blah.txt";
@@ -45,16 +47,9 @@ namespace node {
 int main() {
 	using namespace std;
 
-	// MIME type
-	cout << "Content-Type: text/plain\n\n" << endl;
-
 	// Currently connected AP
-	const string filename = "/tmp/blah.txt";
-	system(string("iwgetid > " + filename).c_str());
-
-	string ap;
-	getline(ifstream(filename), ap);
-	cout << "Current AP " << ap << endl;
+	string ap = node::command("iwgetid");
+	cout << "Current AP:" << ap << endl;
 
 	// Interrogate self
 	stringstream mac;
@@ -80,12 +75,15 @@ int main() {
 
 	// Search for vendor
 	if (regex_search(iwlist.c_str(), m, regex("Address: (.*)"))) {
+
 		cmatch mcopy (m);
 		const string mac = mcopy[1];
 
 		cout << "mac: " << mac << endl;
 		string vendor = "no vendor";
+
 		if (regex_search(oui.str().c_str(), m, regex("XEROX(.*)"))) {
+
 			cmatch mcopy2 (m);
 			vendor = to_string(mcopy2.size());
 		}
@@ -107,7 +105,8 @@ int main() {
 	*/
 
 	// Rescan (just the AP names)
-	const auto rescan = node::command("iwlist wlp1s0 scan | grep -E 'ESSID|Address'");
+	cout << "----------" << endl;
+	const auto rescan = node::command("iwlist wlp1s0 scan | grep ESSID");
 	cout << rescan << endl;
 
 	return 0;
