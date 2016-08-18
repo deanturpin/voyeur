@@ -9,10 +9,19 @@ namespace node {
 
 	class node {
 
-		public:
+		const string mac;
+		const string essid;
 
-		string mac;
-		string essid;
+		public:
+			node(const string &m, const string &e)
+				: mac(m)
+				, essid(e)
+			{}
+
+			void print() const {
+				cout << "\t" << mac << " " << essid << endl;
+			}
+
 	};
 
 	string command(const string &c) {
@@ -26,6 +35,12 @@ namespace node {
 		return s.str();
 	}
 }
+
+// "ip route",
+// "ping -w 1 8.8.8.8",
+// "ip neighbour",
+// "nc -vz 0.0.0.0 1-20000 2>&1 | grep succeeded",
+// "iwlist wlp1s0 scan | grep ESSID",
 
 int main() {
 	using namespace std;
@@ -42,31 +57,22 @@ int main() {
 	cout << "Current AP " << ap << endl;
 
 	// Interrogate self
-	node::node self;
 	stringstream mac;
 	mac << ifstream("/sys/class/net/wlp1s0/address").rdbuf();
-	self.mac = mac.str();;
-	self.essid = ap;
 
 	// Create container for all nodes
 	vector<node::node> nodes;
-	nodes.push_back(self);
+	nodes.push_back(node::node(mac.str(), ap));
 
 	cout << "Number of nodes " << nodes.size() << endl;
 	for (const auto &n : nodes)
-		cout << "\t" << n.mac << " " << n.essid << endl;
+		n.print();
 
-	// "ip route",
-	// "ping -w 1 8.8.8.8",
-	// "ip neighbour",
-	// "nc -vz 0.0.0.0 1-20000 2>&1 | grep succeeded",
-	// "iwlist wlp1s0 scan | grep ESSID",
-
-	cout << "Read OUI... " << endl;
+	// Vendor lookup
 	stringstream oui;
 	oui << ifstream("/usr/share/ieee-data/oui.txt").rdbuf();
-	cout << "done" << endl;
 
+	// AP scan
 	const string iwlist = node::command("iwlist wlp1s0 scan");
 
 	// Extraction of several sub-matches
@@ -87,6 +93,7 @@ int main() {
 		cout << "vendor: " << vendor << endl;
 	}
 
+	/*
 	vector<string> keys = {
 		"ESSID",
 		"Encryption key"
@@ -97,9 +104,10 @@ int main() {
 		if (regex_search(iwlist.c_str(), m, regex(k + ":.*"))) {
 			cout << *m.cbegin() << endl;
 		}
+	*/
 
 	// Rescan (just the AP names)
-	const auto rescan = node::command("iwlist wlp1s0 scan | grep ESSID");
+	const auto rescan = node::command("iwlist wlp1s0 scan | grep -E 'ESSID|Address'");
 	cout << rescan << endl;
 
 	return 0;
