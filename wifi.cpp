@@ -11,9 +11,20 @@ namespace node {
 
 		public:
 
-		string MAC;
-		string ESSID;
+		string mac;
+		string essid;
 	};
+
+	string command(const string &c) {
+
+		const string file = "/tmp/blah.txt";
+
+		system((c + " > " + file).c_str());
+		stringstream s;
+		s << ifstream(file).rdbuf();
+
+		return s.str();
+	}
 }
 
 int main() {
@@ -32,15 +43,18 @@ int main() {
 
 	// Interrogate self
 	node::node self;
-	// string mac = ifstream("/sys/class/net/wlp1s0/address").rdbuf();
-	self.MAC = "blah";
-	self.ESSID = ap;
+	stringstream mac;
+	mac << ifstream("/sys/class/net/wlp1s0/address").rdbuf();
+	self.mac = mac.str();;
+	self.essid = ap;
 
 	// Create container for all nodes
 	vector<node::node> nodes;
 	nodes.push_back(self);
 
 	cout << "Number of nodes " << nodes.size() << endl;
+	for (const auto &n : nodes)
+		cout << "\t" << n.mac << " " << n.essid << endl;
 
 	// "ip route",
 	// "ping -w 1 8.8.8.8",
@@ -53,27 +67,22 @@ int main() {
 	oui << ifstream("/usr/share/ieee-data/oui.txt").rdbuf();
 	cout << "done" << endl;
 
-	const string file = "/tmp/blah.txt";
-	const string command = "iwlist wlp1s0 scan > " + file;
-
-	// Get all visiable access points
-	cout << "AP scan..." << endl;
-	system(command.c_str());
-	stringstream s;
-	s << ifstream(file).rdbuf();
+	const string iwlist = node::command("iwlist wlp1s0 scan");
 
 	// Extraction of several sub-matches
 	cmatch m;
 
 	// Search for vendor
-	if (regex_search(s.str().c_str(), m, regex("Address: (.*)"))) {
-		const cmatch mcopy (m);
+	if (regex_search(iwlist.c_str(), m, regex("Address: (.*)"))) {
+		cmatch mcopy (m);
 		const string mac = mcopy[1];
 
 		cout << "mac: " << mac << endl;
 		string vendor = "no vendor";
-		// if (regex_search(oui.str().c_str(), m, regex("XEROX")))
-			// vendor = *m.cbegin();
+		if (regex_search(oui.str().c_str(), m, regex("XEROX(.*)"))) {
+			cmatch mcopy2 (m);
+			vendor = to_string(mcopy2.size());
+		}
 
 		cout << "vendor: " << vendor << endl;
 	}
@@ -85,11 +94,13 @@ int main() {
 
 	// Search for other keys
 	for (const auto &k : keys)
-		if (regex_search(s.str().c_str(), m, regex(k + ":.*")))
+		if (regex_search(iwlist.c_str(), m, regex(k + ":.*"))) {
 			cout << *m.cbegin() << endl;
+		}
 
-	system("iwlist wlp1s0 scan | grep ESSID");
-	cout << "Scan complete" << endl;
+	// Rescan (just the AP names)
+	const auto rescan = node::command("iwlist wlp1s0 scan | grep ESSID");
+	cout << rescan << endl;
 
 	return 0;
 }
