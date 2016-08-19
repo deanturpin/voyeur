@@ -98,6 +98,9 @@ int main() {
 		}
 	*/
 
+	// http://192.168.0.10:1400/status/controllers
+	// http://192.168.0.10:1400/status
+
 	// Rescan (just the AP names)
 	cout << "------------------------------" << endl;
 	cout << node::command("iwlist wlp1s0 scan | grep ESSID") << endl;
