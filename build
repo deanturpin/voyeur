@@ -16,13 +16,18 @@ cat <<HEADER
 
 <html>
 <head>
-<meta http-equiv="refresh" content="5">
+<meta http-equiv="refresh" content="1">
 </head>
 <body>
 <pre>
 HEADER
 
-clang++ wifi.cpp -o wifi.o -std=c++1z && ./wifi.o
+# object=/tmp/wifi.o
+# clang++ /home/deanturpin/dev/watch/wifi.cpp -o $object -std=c++1z && $object
+
+pushd /home/deanturpin/dev/watch >& /dev/null
+make run
+popd >& /dev/null
 
 # HTML footer
 cat <<FOOTER
