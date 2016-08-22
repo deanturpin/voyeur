@@ -46,8 +46,8 @@ key ipaddress
 ip=$(hostname -I)
 [[ $ip =~ [^\ ]+ ]] && value $BASH_REMATCH
 
-key ping
-ping -w 1 -c 1 8.8.8.8 >& /dev/null && value success || value fail
+key curl
+curl github.com >& /dev/null && value yes || value no
 
 key gateway
 ip route | while read line; do

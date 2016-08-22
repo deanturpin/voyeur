@@ -25,7 +25,7 @@ http://127.0.0.1/cgi-bin/watch?cat%20/proc/interrupts
 
 ## OUI
 OUI must be installed for the vendor lookup. Curiously it is installed by
-default on CentOS and Scientific Linux but not Ubuntu. It is trivial to
+default on CentOS and Scientific Linux but not regular Ubuntu. It is trivial to
 install, though.
 
 ```
