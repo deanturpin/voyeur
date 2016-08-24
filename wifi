@@ -44,7 +44,7 @@ value $(trim_ap $(iwgetid))
 
 key ipaddress
 ip=$(hostname -I)
-[[ $ip =~ [^\ ]+ ]] && value $BASH_REMATCH
+[[ $ip =~ [^\ ]+ ]] && value $BASH_REMATCH || value unassigned
 
 key curl
 curl github.com >& /dev/null && value yes || value no

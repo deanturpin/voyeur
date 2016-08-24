@@ -107,6 +107,7 @@ int main() {
 	cout << "ping: " << node::command("ping -w 1 8.8.8.8 1> /dev/null && echo true || echo false") << endl;
 	// cout << node::command("ip route") << endl;
 	cout << node::command("ip neighbour") << endl;
+	cout << node::command("curl github.com && echo github yes || echo github no") << endl;
 	cout << node::command("nc -vz 0.0.0.0 1-20000 2>&1 | grep succeeded") << endl;
 	cout << node::command("hcitool scan") << endl;
 
