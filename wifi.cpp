@@ -2,7 +2,6 @@
 #include <fstream>
 #include <vector>
 #include <regex>
-#include <set>
 
 namespace node {
 
@@ -39,27 +38,23 @@ int main() {
 	string line;
 	vector<pair<string, string>> nodes;
 
-	int lines = 0;
-
 	while (getline(iwlist, line)) {
 
-		cmatch m;
-		++lines;
-
+		// Keys we're interested in
 		const vector<string> keys = {"Address", "ESSID"};
 
-		// Search for keys
+		// Search for the keys
+		cmatch m;
 		for (const auto &k : keys)
 			if (regex_search(line.c_str(), m, regex(k + ".*")))
 				nodes.emplace_back(make_pair(k, *m.cbegin()));
 	}
 
-	cout << "Lines read " << lines <<endl;
-
-	// Dump the nodes
-	cout << "Nodes " << nodes.size() << endl;
+	// Dump keys
 	for (const auto &n : nodes)
 		cout << (n.first.find("Address") != string::npos ? "\n" : "") << n.second << endl;
+
+	// Check vendors
 
 	// http://192.168.0.10:1400/status/controllers
 	// http://192.168.0.10:1400/status
