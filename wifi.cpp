@@ -11,10 +11,14 @@ namespace node {
 	// A thing on the network
 	struct node {
 
-		// const string def = "default";
-
 		string mac;
 		string essid;
+
+		void print() const {
+			cout << essid << endl;
+			cout << "\t" << mac << endl;
+			cout << endl;
+		}
 	};
 
 	// Run something on the command line and return the output
@@ -59,29 +63,32 @@ int main() {
 	stringstream iwlist = node::command("iwlist wlp1s0 scan");
 
 	string line;
-	set<string> essid;
 	vector<node::node> nodes;
 
 	while (getline(iwlist, line)) {
 
 		cmatch m;
 
-		if (regex_search(line.c_str(), m, regex("ESSID.*"))) {
+		// MAC
+		if (regex_search(line.c_str(), m, regex("Address.*"))) {
 
 			// Push a new node
 			nodes.emplace_back(node::node());
 
-			essid.emplace(*m.cbegin());
-			nodes.rbegin()->essid = *m.cbegin();
+			// Store MAC
+			nodes.rbegin()->mac = *m.cbegin();
 		}
+		
+		// ESSID
+		if (regex_search(line.c_str(), m, regex("ESSID.*")))
+			nodes.rbegin()->essid = *m.cbegin();
 	}
 
 	// Dump the nodes
 	cout << "Nodes " << nodes.size() << endl;
 
-	// Dump the ESSIDs
-	for (const auto &id : essid)
-		cout << id << endl;
+	for (const auto &n : nodes)
+		n.print();
 
 	// cout << iwlist << endl;
 
