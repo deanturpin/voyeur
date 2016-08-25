@@ -36,23 +36,38 @@ int main() {
 	stringstream iwlist = node::command("iwlist wlp1s0 scan");
 
 	string line;
-	vector<pair<string, string>> nodes;
+	map<string, vector<string>> nodes;
 
 	while (getline(iwlist, line)) {
 
 		// Keys we're interested in
 		const vector<string> keys = {"Address", "ESSID"};
 
+		static string essid = "default";
+
 		// Search for the keys
 		cmatch m;
 		for (const auto &k : keys)
-			if (regex_search(line.c_str(), m, regex(k + ".*")))
-				nodes.emplace_back(make_pair(k, *m.cbegin()));
+			if (regex_search(line.c_str(), m, regex(k + ".*"))) {
+
+				const string t = *m.cbegin();
+
+				if (t.find("Address"))
+					essid = t;
+
+				nodes[essid].push_back(t);
+			}
 	}
 
 	// Dump keys
-	for (const auto &n : nodes)
-		cout << (n.first.find("Address") != string::npos ? "\n" : "") << n.second << endl;
+	for (const auto &n : nodes) {
+
+		cout << endl << n.first << endl;
+		for (const auto &k : n.second)
+			cout << "\t" << k << endl;
+	}
+
+	// cout << (n.first.find("Address") != string::npos ? "\n" : "") << n.second << endl;
 
 	// Check vendors
 
