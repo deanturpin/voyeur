@@ -8,5 +8,4 @@ clean:
 all: wifi.o
 
 run: all
-	./wifi.o
-	
+	sudo ./wifi.o
