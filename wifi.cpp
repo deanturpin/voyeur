@@ -9,22 +9,12 @@ namespace node {
 	using namespace std;
 
 	// A thing on the network
-	class node {
+	struct node {
 
-		const string mac;
-		const string essid;
+		// const string def = "default";
 
-		public:
-
-			node(const string &m, const string &e)
-				: mac(m)
-				, essid(e)
-			{}
-
-			void print() const {
-				cout << "\t" << mac << " " << essid << endl;
-			}
-
+		string mac;
+		string essid;
 	};
 
 	// Run something on the command line and return the output
@@ -70,15 +60,26 @@ int main() {
 
 	string line;
 	set<string> essid;
+	vector<node::node> nodes;
 
 	while (getline(iwlist, line)) {
 
 		cmatch m;
 
-		if (regex_search(line.c_str(), m, regex("ESSID.*")))
+		if (regex_search(line.c_str(), m, regex("ESSID.*"))) {
+
+			// Push a new node
+			nodes.emplace_back(node::node());
+
 			essid.emplace(*m.cbegin());
+			nodes.rbegin()->essid = *m.cbegin();
+		}
 	}
 
+	// Dump the nodes
+	cout << "Nodes " << nodes.size() << endl;
+
+	// Dump the ESSIDs
 	for (const auto &id : essid)
 		cout << id << endl;
 
