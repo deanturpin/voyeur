@@ -2,6 +2,7 @@
 #include <fstream>
 #include <vector>
 #include <regex>
+#include <set>
 
 namespace node {
 
@@ -14,6 +15,7 @@ namespace node {
 		const string essid;
 
 		public:
+
 			node(const string &m, const string &e)
 				: mac(m)
 				, essid(e)
@@ -26,7 +28,7 @@ namespace node {
 	};
 
 	// Run something on the command line and return the output
-	string command(const string &c) {
+	stringstream command(const string &c) {
 
 		const string file = "/tmp/blah.txt";
 
@@ -34,7 +36,7 @@ namespace node {
 		stringstream s;
 		s << ifstream(file).rdbuf();
 
-		return s.str();
+		return s;
 	}
 }
 
@@ -42,6 +44,7 @@ int main() {
 	using namespace std;
 
 	// Currently connected AP
+	/*
 	string ap = node::command("iwgetid");
 	cout << "Current AP:" << ap << endl;
 
@@ -60,14 +63,31 @@ int main() {
 	// Vendor lookup
 	stringstream oui;
 	oui << ifstream("/usr/share/ieee-data/oui.txt").rdbuf();
+	*/
 
 	// AP scan
-	const string iwlist = node::command("iwlist wlp1s0 scan");
+	stringstream iwlist = node::command("iwlist wlp1s0 scan");
+
+	string line;
+	set<string> essid;
+
+	while (getline(iwlist, line)) {
+
+		cmatch m;
+
+		if (regex_search(line.c_str(), m, regex("ESSID.*")))
+			essid.emplace(*m.cbegin());
+	}
+
+	for (const auto &id : essid)
+		cout << id << endl;
+
+	// cout << iwlist << endl;
 
 	// Extraction of several sub-matches
-	cmatch m;
 
 	// Search for vendor
+	/*
 	if (regex_search(iwlist.c_str(), m, regex("Address: (.*)"))) {
 
 		cmatch mcopy (m);
@@ -84,6 +104,7 @@ int main() {
 
 		cout << "vendor: " << vendor << endl;
 	}
+	*/
 
 	/*
 	vector<string> keys = {
@@ -102,14 +123,14 @@ int main() {
 	// http://192.168.0.10:1400/status
 
 	// Rescan (just the AP names)
-	cout << "------------------------------" << endl;
-	cout << node::command("iwlist wlp1s0 scan | grep ESSID") << endl;
-	cout << "ping: " << node::command("ping -w 1 8.8.8.8 1> /dev/null && echo true || echo false") << endl;
+	// cout << "------------------------------" << endl;
+	// cout << node::command("iwlist wlp1s0 scan | grep ESSID") << endl;
+	// cout << "ping: " << node::command("ping -w 1 8.8.8.8 1> /dev/null && echo true || echo false") << endl;
 	// cout << node::command("ip route") << endl;
-	cout << node::command("ip neighbour") << endl;
-	cout << node::command("curl github.com && echo github yes || echo github no") << endl;
-	cout << node::command("nc -vz 0.0.0.0 1-20000 2>&1 | grep succeeded") << endl;
-	cout << node::command("hcitool scan") << endl;
+	// cout << node::command("ip neighbour") << endl;
+	// cout << node::command("curl github.com && echo github yes || echo github no") << endl;
+	// cout << node::command("nc -vz 0.0.0.0 1-20000 2>&1 | grep succeeded") << endl;
+	// cout << node::command("hcitool scan") << endl;
 
 	return 0;
 }
