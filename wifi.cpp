@@ -60,6 +60,7 @@ int main() {
 	// Read vendor file
 	stringstream oui;
 	oui << ifstream("/usr/share/ieee-data/oui.txt").rdbuf();
+	const auto vendors = oui.str();
 
 	// Dump keys
 	cout << "Number of APs " << nodes.size() << endl;
@@ -75,12 +76,20 @@ int main() {
 		smatch m;
 
 		// Extract the MAC
-		if (regex_search(s, m, regex("(([0-9a-fA-F]{2}:){5}[0-9a-fA-F]{2})")))
-			nodes[node.first]["Vendor"] = *m.cbegin();
+		if (regex_search(s, m, regex("(([0-9a-fA-F]{2}:){2}[0-9a-fA-F]{2})"))) {
+
+			// Swap colons for hyphens
+			auto mac = m.str();
+			replace(mac.begin(), mac.end(), ':', '-');
+
+			// Search for vendor
+			if (regex_search(vendors, m, regex(mac + ".*")))
+				nodes[node.first]["Vendor"] = m.str();
+		}
 
 		// Dump all key value pairs
 		for (const auto &value : node.second)
-			cout << "\t" << value.second << endl;
+			cout << value.second << endl;
 	}
 
 	return 0;
