@@ -3,7 +3,7 @@
 #include <vector>
 #include <regex>
 
-namespace node {
+namespace utl {
 
 	using namespace std;
 
@@ -12,7 +12,10 @@ namespace node {
 
 		const string file = "/tmp/blah.txt";
 
+		// Contruct full command
 		system((c + " > " + file).c_str());
+
+		// Read all of the buffer
 		stringstream s;
 		s << ifstream(file).rdbuf();
 
@@ -33,7 +36,7 @@ int main() {
 	// oui << ifstream("/usr/share/ieee-data/oui.txt").rdbuf();
 
 	// AP scan
-	stringstream iwlist = node::command("iwlist wlp1s0 scan");
+	stringstream iwlist = utl::command("iwlist wlp1s0 scan");
 
 	string line;
 	map<string, vector<string>> nodes;
@@ -48,6 +51,7 @@ int main() {
 		// Search for the keys
 		cmatch m;
 		for (const auto &k : keys)
+
 			if (regex_search(line.c_str(), m, regex(k + ".*"))) {
 
 				const string t = *m.cbegin();
@@ -62,7 +66,9 @@ int main() {
 	// Dump keys
 	for (const auto &n : nodes) {
 
-		cout << endl << n.first << endl;
+		static int i = 0;
+
+		cout << endl << i++ << endl;
 		for (const auto &k : n.second)
 			cout << "\t" << k << endl;
 	}
@@ -76,13 +82,13 @@ int main() {
 
 	// Rescan (just the AP names)
 	// cout << "------------------------------" << endl;
-	// cout << node::command("iwlist wlp1s0 scan | grep ESSID") << endl;
-	// cout << "ping: " << node::command("ping -w 1 8.8.8.8 1> /dev/null && echo true || echo false") << endl;
-	// cout << node::command("ip route") << endl;
-	// cout << node::command("ip neighbour") << endl;
-	// cout << node::command("curl github.com && echo github yes || echo github no") << endl;
-	// cout << node::command("nc -vz 0.0.0.0 1-20000 2>&1 | grep succeeded") << endl;
-	// cout << node::command("hcitool scan") << endl;
+	// cout << utl::command("iwlist wlp1s0 scan | grep ESSID") << endl;
+	// cout << "ping: " << utl::command("ping -w 1 8.8.8.8 1> /dev/null && echo true || echo false") << endl;
+	// cout << utl::command("ip route") << endl;
+	// cout << utl::command("ip neighbour") << endl;
+	// cout << utl::command("curl github.com && echo github yes || echo github no") << endl;
+	// cout << utl::command("nc -vz 0.0.0.0 1-20000 2>&1 | grep succeeded") << endl;
+	// cout << utl::command("hcitool scan") << endl;
 
 	return 0;
 }

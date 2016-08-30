@@ -1,5 +1,6 @@
 #!/bin/bash
 
+
 # Look up vendor from first half of MAC
 function vendor {
 
@@ -51,7 +52,7 @@ curl github.com >& /dev/null && value yes || value no
 
 key gateway
 ip route | while read line; do
-	
+
 	[[ $line =~ via\ ([[:digit:]]{1,3}\.[[:digit:]]{1,3}\.[[:digit:]]{1,3}\.[[:digit:]]{1,3}) ]] && value ${BASH_REMATCH[1]}
 done
 
