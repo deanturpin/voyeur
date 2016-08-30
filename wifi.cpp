@@ -31,7 +31,7 @@ int main() {
 	stringstream iwlist = utl::command("iwlist wlp1s0 scan");
 
 	string line;
-	map<int, vector<string>> nodes;
+	map<int, map<string, string>> nodes;
 
 	while (getline(iwlist, line)) {
 
@@ -39,29 +39,48 @@ int main() {
 		const vector<string> keys = {"Address", "ESSID", "Encryption key"};
 
 		// Search for the keys
-		for (const auto &k : keys) {
+		for (const auto &key : keys) {
 
 			static int cell = 0;
 
-			if (line.find(k) != string::npos) {
+			if (line.find(key) != string::npos) {
 
 				if (line.find("Cell") != string::npos)
 					++cell;
 
-				nodes[cell].push_back(line);
+				// Store the key/value pair
+				nodes[cell][key] = line;
+
+				// Move on if a match has been found
 				continue;
 			}
 		}
 	}
 
+	// Read vendor file
+	stringstream oui;
+	oui << ifstream("/usr/share/ieee-data/oui.txt").rdbuf();
+
 	// Dump keys
 	cout << "Number of APs " << nodes.size() << endl;
-	for (const auto &n : nodes) {
+	for (const auto &node : nodes) {
 
-		cout << n.first << endl;
+		// Dump values
+		cout << node.first << endl;
 
-		for (const auto &k : n.second)
-			cout << "\t" << k << endl;
+		// String to search
+		const auto s = node.second.at("Address");
+
+		// Matches
+		smatch m;
+
+		// Extract the MAC
+		if (regex_search(s, m, regex("(([0-9a-fA-F]{2}:){5}[0-9a-fA-F]{2})")))
+			nodes[node.first]["Vendor"] = *m.cbegin();
+
+		// Dump all key value pairs
+		for (const auto &value : node.second)
+			cout << "\t" << value.second << endl;
 	}
 
 	return 0;
