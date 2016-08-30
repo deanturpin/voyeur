@@ -7,5 +7,5 @@ while :; do
 
 	# Build and run
 	clear
-	make -j run # && sudo cp wifi.o /usr/lib/cgi-bin/
+	make -j run
 done

@@ -47,31 +47,43 @@ int main() {
 		const vector<string> keys = {"Address", "ESSID"};
 
 		static string essid = "default";
+		cout << "--- " << line << endl;
 
 		// Search for the keys
-		cmatch m;
-		for (const auto &k : keys)
+		// cmatch m;
+		for (const auto &k : keys) {
 
-			if (regex_search(line.c_str(), m, regex(k + ".*"))) {
+			regex e ("Address.*");
 
-				const string t = *m.cbegin();
+			if (regex_match(line, e)) {
 
-				if (t.find("Address"))
-					essid = t;
+				cout << "+++" << line << endl;
 
-				nodes[essid].push_back(t);
+				// const string t = *m.cbegin();
+
+				if (line.find("Address")) {
+					cout << "--- new AP" << endl;
+					essid = line;
+				}
+
+				nodes[essid].push_back(line);
 			}
+
+			continue;
+		}
 	}
 
 	// Dump keys
+	cout << "Number of APs " << nodes.size() << endl;
+	/*
 	for (const auto &n : nodes) {
 
-		static int i = 0;
+		cout << endl << n.first << endl;
 
-		cout << endl << i++ << endl;
 		for (const auto &k : n.second)
 			cout << "\t" << k << endl;
 	}
+	*/
 
 	// cout << (n.first.find("Address") != string::npos ? "\n" : "") << n.second << endl;
 
