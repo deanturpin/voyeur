@@ -1,46 +1,23 @@
-#include <iostream>
 #include <algorithm>
+#include <iostream>
 #include <fstream>
 #include <vector>
 #include <string>
 #include <regex>
 
-namespace utl {
-
-	using namespace std;
-
-	// Run something on the command line and return the output
-	stringstream command(const string &c) {
-
-		const string file = "/tmp/blah.txt";
-
-		// Contruct full command
-		system((c + " > " + file).c_str());
-
-		// Read all of the buffer
-		stringstream s;
-		s << ifstream(file).rdbuf();
-
-		return s;
-	}
-}
-
 int main() {
 
 	using namespace std;
 
-	// AP scan
-	stringstream iwlist = utl::command("iwlist wlp1s0 scan");
-
 	// Container for all nodes
 	map<int, map<string, string>> nodes;
 
-	// Iterate over each line
+	// Read lines from stdin
 	string line;
-	while (getline(iwlist, line)) {
+	while (getline(cin, line)) {
 
 		// Keys we're interested in
-		const vector<string> keys = {"Address", "ESSID", "Encryption key"};
+		const vector<string> keys = {"Address", "ESSID"};
 
 		// Search for the keys
 		for (const auto &key : keys) {
