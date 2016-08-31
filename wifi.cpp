@@ -1,6 +1,8 @@
 #include <iostream>
+#include <algorithm>
 #include <fstream>
 #include <vector>
+#include <string>
 #include <regex>
 
 namespace utl {
@@ -30,9 +32,11 @@ int main() {
 	// AP scan
 	stringstream iwlist = utl::command("iwlist wlp1s0 scan");
 
-	string line;
+	// Container for all nodes
 	map<int, map<string, string>> nodes;
 
+	// Iterate over each line
+	string line;
 	while (getline(iwlist, line)) {
 
 		// Keys we're interested in
@@ -80,16 +84,21 @@ int main() {
 
 			// Swap colons for hyphens
 			auto mac = m.str();
+
 			replace(mac.begin(), mac.end(), ':', '-');
 
 			// Search for vendor
+			string vendor = "unknown";
 			if (regex_search(vendors, m, regex(mac + ".*")))
-				nodes[node.first]["Vendor"] = m.str();
+				vendor = m.str();
+
+			// Insert vendor
+			nodes[node.first]["Vendor"] = vendor;
 		}
 
 		// Dump all key value pairs
 		for (const auto &value : node.second)
-			cout << value.second << endl;
+			cout << '\t' << value.first << ": " << value.second << endl;
 	}
 
 	return 0;
