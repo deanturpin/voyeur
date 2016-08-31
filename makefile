@@ -8,4 +8,4 @@ clean:
 all: wifi.o
 
 run: all
-	./wifi.o
+	./wifi.o < scan.txt

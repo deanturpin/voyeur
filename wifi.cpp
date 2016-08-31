@@ -5,6 +5,7 @@
 #include <string>
 #include <regex>
 
+/*
 namespace utl {
 
 	using namespace std;
@@ -24,20 +25,21 @@ namespace utl {
 		return s;
 	}
 }
+*/
 
 int main() {
 
 	using namespace std;
 
 	// AP scan
-	stringstream iwlist = utl::command("iwlist wlp1s0 scan");
+	// stringstream iwlist = utl::command("iwlist wlp1s0 scan");
 
 	// Container for all nodes
 	map<int, map<string, string>> nodes;
 
 	// Iterate over each line
 	string line;
-	while (getline(iwlist, line)) {
+	while (getline(cin, line)) {
 
 		// Keys we're interested in
 		const vector<string> keys = {"Address", "ESSID", "Encryption key"};
