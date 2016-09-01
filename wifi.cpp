@@ -9,8 +9,12 @@ int main() {
 
 	using namespace std;
 
+	cout << "Start" << endl;
+
 	// Container for all nodes
 	map<int, map<string, string>> nodes;
+
+	cout << "Parse stdin" << endl;
 
 	// Read lines from stdin
 	string line;
@@ -38,6 +42,8 @@ int main() {
 		}
 	}
 
+	cout << "Read OUI" << endl;
+
 	// Read vendor file
 	stringstream oui;
 	oui << ifstream("/usr/share/ieee-data/oui.txt").rdbuf();
@@ -45,6 +51,7 @@ int main() {
 
 	// Dump keys
 	cout << "Number of APs " << nodes.size() << endl;
+	cout << "Vendor search" << endl;
 	for (const auto &node : nodes) {
 
 		// String to search
@@ -71,16 +78,18 @@ int main() {
 		}
 	}
 
+	cout << "Dump results" << endl;
 	for (const auto &node : nodes) {
 
 		// Dump key
 		cout << node.first << endl;
 
-		// Just dump the key:values we're interested in
+		// Just dump the values we're interested in
 		cout << '\t' << nodes[node.first]["Vendor"] << endl;
 		cout << '\t' << nodes[node.first]["ESSID"] << endl;
 	}
 
+	cout << "Complete" << endl;
 
 	return 0;
 }
