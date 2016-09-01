@@ -47,9 +47,6 @@ int main() {
 	cout << "Number of APs " << nodes.size() << endl;
 	for (const auto &node : nodes) {
 
-		// Dump values
-		cout << node.first << endl;
-
 		// String to search
 		const auto s = node.second.at("Address");
 
@@ -72,11 +69,18 @@ int main() {
 			// Insert vendor
 			nodes[node.first]["Vendor"] = vendor;
 		}
-
-		// Dump all key value pairs
-		for (const auto &value : node.second)
-			cout << '\t' << value.first << ": " << value.second << endl;
 	}
+
+	for (const auto &node : nodes) {
+
+		// Dump key
+		cout << node.first << endl;
+
+		// Just dump the key:values we're interested in
+		cout << '\t' << nodes[node.first]["Vendor"] << endl;
+		cout << '\t' << nodes[node.first]["ESSID"] << endl;
+	}
+
 
 	return 0;
 }
