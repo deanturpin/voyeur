@@ -65,7 +65,6 @@ int main() {
 
 			// Swap colons for hyphens
 			auto mac = m.str();
-
 			replace(mac.begin(), mac.end(), ':', '-');
 
 			// Search for vendor
@@ -85,8 +84,8 @@ int main() {
 		cout << node.first << endl;
 
 		// Just dump the values we're interested in
-		cout << '\t' << nodes[node.first]["Vendor"] << endl;
 		cout << '\t' << nodes[node.first]["ESSID"] << endl;
+		cout << '\t' << nodes[node.first]["Vendor"] << endl;
 	}
 
 	cout << "Complete" << endl;
