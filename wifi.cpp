@@ -85,7 +85,12 @@ int main() {
 
 		// Just dump the values we're interested in
 		cout << '\t' << nodes[node.first]["ESSID"] << endl;
-		cout << '\t' << nodes[node.first]["Vendor"] << endl;
+
+		// If the vendor is unknown then print the MAC
+		if (nodes[node.first]["Vendor"] == "unknown")
+			cout << '\t' << nodes[node.first]["Address"] << endl;
+		else
+			cout << '\t' << nodes[node.first]["Vendor"] << endl;
 	}
 
 	cout << "Complete" << endl;
