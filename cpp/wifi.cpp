@@ -9,8 +9,12 @@ int main() {
 
 	using namespace std;
 
+	cout << "Start" << endl;
+
 	// Container for all nodes
 	map<int, map<string, string>> nodes;
+
+	cout << "Parse stdin" << endl;
 
 	// Read lines from stdin
 	string line;
@@ -38,6 +42,8 @@ int main() {
 		}
 	}
 
+	cout << "Read OUI" << endl;
+
 	// Read vendor file
 	stringstream oui;
 	oui << ifstream("/usr/share/ieee-data/oui.txt").rdbuf();
@@ -45,10 +51,8 @@ int main() {
 
 	// Dump keys
 	cout << "Number of APs " << nodes.size() << endl;
+	cout << "Vendor search" << endl;
 	for (const auto &node : nodes) {
-
-		// Dump values
-		cout << node.first << endl;
 
 		// String to search
 		const auto s = node.second.at("Address");
@@ -61,7 +65,6 @@ int main() {
 
 			// Swap colons for hyphens
 			auto mac = m.str();
-
 			replace(mac.begin(), mac.end(), ':', '-');
 
 			// Search for vendor
@@ -72,11 +75,25 @@ int main() {
 			// Insert vendor
 			nodes[node.first]["Vendor"] = vendor;
 		}
-
-		// Dump all key value pairs
-		for (const auto &value : node.second)
-			cout << '\t' << value.first << ": " << value.second << endl;
 	}
+
+	cout << "Dump results" << endl;
+	for (const auto &node : nodes) {
+
+		// Dump key
+		cout << node.first << endl;
+
+		// Just dump the values we're interested in
+		cout << '\t' << nodes[node.first]["ESSID"] << endl;
+
+		// If the vendor is unknown then print the MAC
+		if (nodes[node.first]["Vendor"] == "unknown")
+			cout << '\t' << nodes[node.first]["Address"] << endl;
+		else
+			cout << '\t' << nodes[node.first]["Vendor"] << endl;
+	}
+
+	cout << "Complete" << endl;
 
 	return 0;
 }
