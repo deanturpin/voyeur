@@ -1,0 +1,9 @@
+#!/bin/bash
+
+cat <<MIME
+Content-Type: text/plain
+Access-Control-Allow-Origin: *
+
+MIME
+
+ip neighbour

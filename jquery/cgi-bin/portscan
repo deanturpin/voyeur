@@ -1,0 +1,20 @@
+#!/bin/bash
+
+cat <<MIME
+Content-Type: text/plain
+Access-Control-Allow-Origin: *
+
+MIME
+
+# Check if an IP has been requested
+if [[ $QUERY_STRING =~ [[:digit:]\.]{7,} ]]; then
+
+	# Extract IP
+	ip=$BASH_REMATCH
+
+	# And scan it
+	nc -vz $ip 1-10000 |& grep succeeded
+else
+	# Otherwise report bad IP
+	echo BADIP
+fi

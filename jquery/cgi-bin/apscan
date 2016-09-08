@@ -1,0 +1,10 @@
+#!/bin/bash
+
+cat <<MIME
+Content-Type: text/plain
+Access-Control-Allow-Origin: *
+
+MIME
+
+echo Access points
+iwlist wls3 scan  | grep ESSID

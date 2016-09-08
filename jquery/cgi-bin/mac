@@ -1,0 +1,29 @@
+#!/bin/bash
+
+cat <<MIME
+Content-Type: text/plain
+Access-Control-Allow-Origin: *
+
+MIME
+
+# Check if a MAC has been requested
+if [[ $QUERY_STRING =~ ^[[:xdigit:]:]{8} ]]; then
+
+	# Extract the first bit
+	mac=$BASH_REMATCH
+
+	# Remove the colons
+	mac=${mac//:/}
+
+	# Make uppercase
+	# mac=${mac//[a-z]/[A-Z]}
+	vendor=$(grep -i $mac ieee-oui.txt)
+
+	echo $vendor
+
+	# Trim off the beginning bit
+	# [[ $vendor =~ \)[[:space:]]+(.*$) ]] && echo ${BASH_REMATCH[1]}
+else
+	# Otherwise report bad IP
+	echo BADMAC
+fi
