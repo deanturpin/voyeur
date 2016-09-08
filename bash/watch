@@ -1,0 +1,39 @@
+#!/bin/bash
+
+# Send all errors to stdout
+exec 2>&1
+
+# Print MIME type
+cat <<MIME
+Content-Type: text/html
+
+MIME
+
+# HTML header
+stamp=$(date)
+cat <<HEADER
+<!-- $stamp -->
+
+<html>
+<head>
+<meta http-equiv="refresh" content="5">
+</head>
+<body>
+<pre>
+HEADER
+
+# Check params
+[[ $QUERY_STRING == "" ]] && echo What shall I watch? && exit
+
+# Strip %
+command=${QUERY_STRING//%20/ }
+
+# Run the command
+$command
+
+# HTML footer
+cat <<FOOTER
+</pre>
+</body>
+FOOTER
+
